@@ -5,10 +5,10 @@ Deep Learning model to tackle the Fake News Challenge (http://www.fakenewschalle
 
 -> Keras 1.2.2
 
--> fnc_model.py: model definition & training
+-> *fnc_model.py*: model definition & training
 
--> my_layers2.py: custom Keras layers and callback
+-> *my_layers2.py*: custom Keras layers and callback
 
--> generate-everything.py: generate some features and useful variables into files variables.pkl and features.pkl
+-> *generate-everything.py*: generate some features and useful variables into files variables.pkl and features.pkl
 
--> generate-similarities.py: generate similarity features
+-> *generate-similarities.py*: generate similarity features
