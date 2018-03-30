@@ -36,6 +36,7 @@ Deep Learning model to tackle the Fake News Challenge (http://www.fakenewschalle
 1 - Download the SNLI and MultiNLI datasets from the two corresponding links:
 
 https://nlp.stanford.edu/projects/snli/
+
 http://www.nyu.edu/projects/bowman/multinli/
 
 2 - Download all the files in this repository, including ```test.body.word2vec.pkl```, ```test.headline.word2vec.pkl```,```train.body.word2vec.pkl``` and ```train.headline.word2vec.pkl```, which were too big to upload directly.
