@@ -22,3 +22,11 @@ Deep Learning model to tackle the Fake News Challenge (http://www.fakenewschalle
 -> **similarity.pkl**: https://mega.nz/#!Qs5kAYDR!4JbHavQB8ILmO6r5Z6ZosAAJJT-YXH6XIYJy3e0XFRQ
 
 -> **variables.pkl**: https://mega.nz/#!9h5G0T6Q!cqW21okeT4kILtVl5_9pDHA-vf02_qks7Hls80Z8sKY
+
+-> **test.body.word2vec.pkl**: https://mega.nz/#!I4ZWAZYY!sMYOlVcbnZkR580CifFknYmbI1CHTdyEYBnarcSGBEk
+
+-> **test.headline.word2vec.pkl**: https://mega.nz/#!BtpwSQYC!A2cvzTsH_8S6LLjNC2cfB8wwaiFAwzPNZlR-9Qnn3UI
+
+-> **train.body.word2vec.pkl**: https://mega.nz/#!Qlw1AQbC!XrBsiJgBrkJ04wIH-kBBYM8NWPDNnLfK1DAYSogs5Cg
+
+-> **train.headline.word2vec.pkl**: https://mega.nz/#!B9ZjQbRS!TxgB0fTv3hCPKCS9wOF574STGf7naA2DBx9t2AK_BFs
