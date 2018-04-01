@@ -28,7 +28,7 @@ from keras import initializations
 from keras.preprocessing import sequence
 from keras.preprocessing.text import Tokenizer
 
-from my_layers import SelfAttLayer, AttentionWithContext
+from my_layers2 import SelfAttLayer
 
 # Some hyperparameters #
 hidden_units = 150
@@ -177,15 +177,15 @@ g2 = gru2(g1)
 g2 = merge([g1, g2], mode='concat')
 g2 = Dropout(0.1)(g2)
 att = TimeDistributed(Dense(hidden_units))(g2)
-att = SelfAttLayer(input_context, name='attention')(att)
-SentenceEncoder = Model([input_premisse, input_context], att)
+att = SelfAttLayer(name='attention')(att)
+SentenceEncoder = Model(input_premisse, att)
 
 ##############################
 
 # Combinar as duas representações #
 
-premisse_representation = SentenceEncoder([input_premisse, drop_premisse])
-hyp_representation = SentenceEncoder([input_hyp, drop_hyp])
+premisse_representation = SentenceEncoder(input_premisse)
+hyp_representation = SentenceEncoder(input_hyp)
 concat = merge([premisse_representation, hyp_representation], mode='concat')
 mul = merge([premisse_representation, hyp_representation], mode='mul')
 dif = merge([premisse_representation, hyp_representation], mode=lambda x: x[0] - x[1], output_shape=lambda x: x[0])
@@ -206,8 +206,8 @@ final_model.fit([X1_nli, X2_nli, overlapFeatures_nli, refutingFeatures_nli, pola
                 Y_nli, validation_data=([X1_test_nli, X2_test_nli, overlapFeatures_nli_test, refutingFeatures_nli_test, polarityFeatures_nli_test, handFeatures_nli_test, cosFeatures_nli_test, bleu_nli_test, rouge_nli_test], Y_test_nli), \
                 callbacks=[early_stop], nb_epoch=100, batch_size=64)
 
-final_model.save("snli-pooling.h5")
-concat_model.save("concat_snli_pooling.h5")
+final_model.save("snli-weights.h5")
+concat_model.save("concat_snli.h5")
 
 score, acc = final_model.evaluate([X1_test_nli, X2_test_nli, overlapFeatures_nli_test, refutingFeatures_nli_test, polarityFeatures_nli_test, handFeatures_nli_test, cosFeatures_nli_test, bleu_nli_test, rouge_nli_test], Y_test_nli, batch_size=64)
 
