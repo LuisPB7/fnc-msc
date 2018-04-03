@@ -237,7 +237,7 @@ weightedAccuracy = weightedAccCallback(X1_test, X2_test, Y_test, overlapFeatures
                                        talos_svdBody_test, talos_svdsim_test,talos_w2vHeadline_test, talos_w2vBody_test, talos_w2vsim_test, talos_sentiHeadline_test, talos_sentiBody_test)
 
 embedding_layer = Embedding( embedding_weights.shape[0], embedding_weights.shape[1], input_length=max_seq_len, weights=[embedding_weights], trainable=False )
-transform_layer = TimeDistributed(Dense( word_embeddings_dim, activation='tanh', name='transform' ))
+transform_layer = TimeDistributed(Dense( word_embeddings_dim, activation='relu', name='transform' ))
 gru1 = GRU(hidden_units, consume_less='gpu', return_sequences=True, name='gru1' )
 gru2 = GRU(hidden_units, consume_less='gpu', return_sequences=True, name='gru2') 
 gru1 = Bidirectional(gru1, name='bigru1')
@@ -333,13 +333,13 @@ dif = merge([headline_representation, document_representation], mode=lambda x: x
 final_merge = merge([concat, mul, dif, input_overlap, input_refuting, input_polarity, input_hand, input_sim, input_bleu, input_rouge, input_talos_count, input_talos_tfidfsim, input_talos_headline_svd, input_talos_body_svd,\
                      input_talos_svdsim, input_talos_headline_w2v, input_talos_body_w2v, input_talos_w2vsim, input_talos_headline_senti, input_talos_body_senti], mode='concat')
 drop3 = Dropout(0.01)(final_merge)
-dense1 = Dense(hidden_units*2, activation='tanh', name='dense1'""", weights=layer_dict['dense1'].get_weights()""")(drop3)
+dense1 = Dense(hidden_units*2, activation='relu', name='dense1'""", weights=layer_dict['dense1'].get_weights()""")(drop3)
 drop4 = Dropout(0.01)(dense1)
 #concat_final = merge([drop4, two_sentences_align, input_talos_count, input_talos_tfidfsim, input_talos_headline_svd, input_talos_body_svd, \
 #                     input_talos_svdsim, input_talos_headline_w2v, input_talos_body_w2v, input_talos_w2vsim, \
 #                     input_talos_headline_senti, input_talos_body_senti], mode='concat')
 #concat_final = merge([drop4, two_sentences_align], mode='concat')
-#dense3 = Dense(300, activation='tanh')(concat_final)
+#dense3 = Dense(300, activation='relu')(concat_final)
 #drop5 = Dropout(0.01)(dense3)
 dense2 = Dense(4, activation='softmax')(drop4)
 final_model = Model([input_headline, input_body,input_overlap, input_refuting, input_polarity, input_hand, \
