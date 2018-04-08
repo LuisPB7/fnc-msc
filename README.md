@@ -13,9 +13,9 @@ Deep Learning model to tackle the Fake News Challenge (http://www.fakenewschalle
 
 -> **generate-similarities.py**: generate similarity features into similarity.pkl
 
--> **concat_snli_pooling.h5**: https://mega.nz/#!hgIwTZrT!sUsk5Ryu9elax_B2-H7eFwE41tsy2f36p5wg-4jyrio
+-> **concat_snli.h5**: https://mega.nz/#!9gJRWLKL!UjJidPxAihOIjELFCpKgWp_f1-xPARaHk0zU3gDWcU4
 
--> **snli-pooling.h5**: https://mega.nz/#!olZylILQ!r3GKndoQh3_JreUIsxjSq3zDtwn4nTRq6bTXhYhXVR8
+-> **snli-weights.h5**: https://mega.nz/#!95QBUb4I!4ssG-fu3Gg99rbfA-sU9VFuCwTU0evhpE7BGlt6kWZ0
 
 -> **features.pkl**: https://mega.nz/#!otoX0bCJ!6e4RVjmNgK5Gopkmueuv5YV0PxAUyN6XtiBugb8cxP4
 
