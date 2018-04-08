@@ -224,6 +224,12 @@ with open("train.body.senti.pkl", "rb") as sentiBody_train:
     
 with open("test.body.senti.pkl", "rb") as sentiBody_test:
     talos_sentiBody_test = cPickle.load(sentiBody_test)
+    
+M = 5
+nb_epoch = T = 100
+alpha_zero = 0.001
+model_prefix = 'Model_'
+snapshot = SnapshotCallbackBuilder(T, M, alpha_zero)
 
 ########################## Definir o modelo ##################################### 
 
@@ -247,10 +253,10 @@ right_branch_gru2 = GRU(hidden_units, consume_less='gpu', return_sequences=True 
 right_branch_gru1 = Bidirectional(right_branch_gru1)
 right_branch_gru2 = Bidirectional(right_branch_gru2)
 
-snli_model = load_model("snli-pooling.h5", custom_objects={'SelfAttLayer':SelfAttLayer})
+snli_model = load_model("snli-weights.h5", custom_objects={'SelfAttLayer':SelfAttLayer})
 layer_dict = dict([(layer.name, layer) for layer in snli_model.layers])
 
-concat_model = load_model("concat_snli_pooling.h5", custom_objects={'SelfAttLayer':SelfAttLayer})
+concat_model = load_model("concat_snli.h5", custom_objects={'SelfAttLayer':SelfAttLayer})
 
 #####################################
 
@@ -294,15 +300,15 @@ mask = Masking(mask_value=0, input_shape=(max_seq_len,))(input_headline)
 embed = embedding_layer(mask)
 g1 = gru1(embed)
 g1 = merge([embed, g1], mode='concat')
-g1 = Dropout(0.1)(g1)
+g1 = Dropout(0.01)(g1)
 g2 = gru2(g1)
 g2 = merge([g1, g2], mode='concat')
-g2 = Dropout(0.1)(g2)
+g2 = Dropout(0.01)(g2)
 att = TimeDistributed(Dense(hidden_units))(g2)
 att = SelfAttLayer(name='attention')(att)
 HeadlineEncoder = Model(input_headline, att, name='HeadlineEncoder')
 
-HeadlineEncoder.load_weights("snli-pooling.h5", by_name=True)
+HeadlineEncoder.load_weights("snli-weights.h5", by_name=True)
 
 ##############################
 
@@ -311,7 +317,7 @@ HeadlineEncoder.load_weights("snli-pooling.h5", by_name=True)
 body_sentence = TimeDistributed(HeadlineEncoder)(input_body)
 body_g1 = right_branch_gru1(body_sentence)
 body_g1 = merge([body_sentence, body_g1], mode='concat')
-body_g1 = Dropout(0.1)(body_g1)
+body_g1 = Dropout(0.01)(body_g1)
 body_g2 = right_branch_gru2(body_g1)
 body_g2 = merge([body_g1,body_g2], mode='concat')
 body_g2 = Dropout(0.01)(body_g2)
@@ -325,23 +331,21 @@ DocumentEncoder = Model(input_body, body_att, name='DocumentEncoder')
 
 headline_representation = HeadlineEncoder(input_headline)
 document_representation = DocumentEncoder(input_body)
-#two_sentences_align = concat_model([input_headline, input_two, input_overlap_two, input_refuting_two, input_polarity_two, input_hand_two, \
-#                                    input_sim_two, input_bleu_two, input_rouge_two])
+two_sentences_align = concat_model([input_headline, input_two, input_overlap_two, input_refuting_two, input_polarity_two, input_hand_two, \
+                                    input_sim_two, input_bleu_two, input_rouge_two])
 concat = merge([headline_representation, document_representation], mode='concat')
 mul = merge([headline_representation, document_representation], mode='mul')
 dif = merge([headline_representation, document_representation], mode=lambda x: x[0] - x[1], output_shape=lambda x: x[0])
 final_merge = merge([concat, mul, dif, input_overlap, input_refuting, input_polarity, input_hand, input_sim, input_bleu, input_rouge, input_talos_count, input_talos_tfidfsim, input_talos_headline_svd, input_talos_body_svd,\
                      input_talos_svdsim, input_talos_headline_w2v, input_talos_body_w2v, input_talos_w2vsim, input_talos_headline_senti, input_talos_body_senti], mode='concat')
 drop3 = Dropout(0.01)(final_merge)
-dense1 = Dense(hidden_units*2, activation='relu', name='dense1'""", weights=layer_dict['dense1'].get_weights()""")(drop3)
+dense1 = Dense(hidden_units*2, activation='relu', name='dense1', weights=layer_dict['dense1'].get_weights())(drop3)
 drop4 = Dropout(0.01)(dense1)
-#concat_final = merge([drop4, two_sentences_align, input_talos_count, input_talos_tfidfsim, input_talos_headline_svd, input_talos_body_svd, \
-#                     input_talos_svdsim, input_talos_headline_w2v, input_talos_body_w2v, input_talos_w2vsim, \
-#                     input_talos_headline_senti, input_talos_body_senti], mode='concat')
-#concat_final = merge([drop4, two_sentences_align], mode='concat')
-#dense3 = Dense(300, activation='relu')(concat_final)
-#drop5 = Dropout(0.01)(dense3)
-dense2 = Dense(4, activation='softmax')(drop4)
+concat_final = merge([drop4, two_sentences_align, input_talos_count, input_talos_tfidfsim, input_talos_headline_svd, input_talos_body_svd, \
+                     input_talos_svdsim, input_talos_headline_w2v, input_talos_body_w2v, input_talos_w2vsim, \
+                     input_talos_headline_senti, input_talos_body_senti], mode='concat')
+drop5 = Dropout(0.01)(concat_final)
+dense2 = Dense(4, activation='softmax')(drop5)
 final_model = Model([input_headline, input_body,input_overlap, input_refuting, input_polarity, input_hand, \
                      input_sim, input_sim_two, input_bleu, input_rouge, input_two, input_overlap_two, input_refuting_two, input_polarity_two, input_hand_two, \
                      input_bleu_two, input_rouge_two, input_talos_count, input_talos_tfidfsim, input_talos_headline_svd, input_talos_body_svd, \
@@ -362,10 +366,10 @@ final_model.fit([X1, X2, overlapFeatures_fnc, refutingFeatures_fnc, polarityFeat
                                   refutingFeatures_fnc_two_test, polarityFeatures_fnc_two_test, handFeatures_fnc_two_test, \
                                   bleu_two_sentences_test, rouge_two_sentences_test, talos_counts_test, talos_tfidfsim_test, talos_svdHeadline_test, talos_svdBody_test, talos_svdsim_test, \
                                   talos_w2vHeadline_test, talos_w2vBody_test, talos_w2vsim_test, talos_sentiHeadline_test, talos_sentiBody_test], Y_test), \
-                callbacks=[early_stop, weightedAccuracy], batch_size=64, nb_epoch=100, class_weight={0:1, 1:3, 2:3, 3:3})
+                callbacks=[weightedAccuracy]+snapshot.get_callbacks(model_prefix=model_prefix), batch_size=64, nb_epoch=100, class_weight={0:1, 1:3, 2:3, 3:3})
 
 
-#final_model.save("fnc-weights.h5")
+final_model.save("fnc-weights.h5")
 
 #######################################################################################
 
