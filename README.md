@@ -45,6 +45,6 @@ http://www.nyu.edu/projects/bowman/multinli/
 
 3 - Run ```python3 generate-similarities.py``` to generate the files ```similarity.pkl```, or simply download it from the above links.
 
-4 - Run ```python nli-model.py``` to train and test the SNLI+MultiNLI model, hence generating the files ```snli-pooling.h5``` and ```concat_snli_pooling.h5```. Once again, you can simply download them directly.
+4 - Run ```python nli-model.py``` to train and test the SNLI+MultiNLI model, hence generating the files ```snli-weights.h5``` and ```concat_snli.h5```. Once again, you can simply download them directly.
 
 5 - Run ```python fnc-model.py``` to train and test the FNC model (code already includes SNLI+MultiNLI weight loading)
