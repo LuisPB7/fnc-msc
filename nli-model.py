@@ -193,9 +193,11 @@ final_merge = merge([concat, mul, dif, input_overlap, input_refuting, input_pola
 drop3 = Dropout(0.01)(final_merge)
 dense1 = Dense(hidden_units*2, activation='relu', name='dense1')(drop3)
 drop4 = Dropout(0.01)(dense1)
-concat_model = Model([input_premisse, input_hyp, input_overlap, input_refuting, input_polarity, input_hand, input_sim, input_bleu, input_rouge], drop4)
-dense2 = Dense(3, activation='softmax')(drop4)
-final_model = Model([input_premisse, input_hyp, input_overlap, input_refuting, input_polarity, input_hand, input_sim, input_bleu, input_rouge], dense2)
+dense2 = Dense(hidden_units, activation='relu', name='dense2')(drop4)
+drop5 = Dropout(0.01)(dense2)
+concat_model = Model([input_premisse, input_hyp, input_overlap, input_refuting, input_polarity, input_hand, input_sim, input_bleu, input_rouge], drop5)
+dense3 = Dense(3, activation='softmax')(drop5)
+final_model = Model([input_premisse, input_hyp, input_overlap, input_refuting, input_polarity, input_hand, input_sim, input_bleu, input_rouge], dense3)
 
 ###################################
 
