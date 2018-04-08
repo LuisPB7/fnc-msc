@@ -341,16 +341,19 @@ final_merge = merge([concat, mul, dif, input_overlap, input_refuting, input_pola
 drop3 = Dropout(0.01)(final_merge)
 dense1 = Dense(hidden_units*2, activation='relu', name='dense1', weights=layer_dict['dense1'].get_weights())(drop3)
 drop4 = Dropout(0.01)(dense1)
-concat_final = merge([drop4, two_sentences_align, input_talos_count, input_talos_tfidfsim, input_talos_headline_svd, input_talos_body_svd, \
+dense2 = Dense(hidden_units, activation='relu', name='dense2', weights=layer_dict['dense2'].get_weights())(drop4)
+drop5 = Dropout(0.01)(dense2)
+
+concat_final = merge([drop5, two_sentences_align, input_talos_count, input_talos_tfidfsim, input_talos_headline_svd, input_talos_body_svd, \
                      input_talos_svdsim, input_talos_headline_w2v, input_talos_body_w2v, input_talos_w2vsim, \
                      input_talos_headline_senti, input_talos_body_senti], mode='concat')
-drop5 = Dropout(0.01)(concat_final)
-dense2 = Dense(4, activation='softmax')(drop5)
+drop6 = Dropout(0.01)(concat_final)
+dense3 = Dense(4, activation='softmax')(drop6)
 final_model = Model([input_headline, input_body,input_overlap, input_refuting, input_polarity, input_hand, \
                      input_sim, input_sim_two, input_bleu, input_rouge, input_two, input_overlap_two, input_refuting_two, input_polarity_two, input_hand_two, \
                      input_bleu_two, input_rouge_two, input_talos_count, input_talos_tfidfsim, input_talos_headline_svd, input_talos_body_svd, \
                      input_talos_svdsim, input_talos_headline_w2v, input_talos_body_w2v, input_talos_w2vsim, \
-                     input_talos_headline_senti, input_talos_body_senti], dense2)
+                     input_talos_headline_senti, input_talos_body_senti], dense3)
 #######################################################################################
 
 
