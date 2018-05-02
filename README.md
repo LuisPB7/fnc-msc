@@ -47,6 +47,6 @@ http://www.nyu.edu/projects/bowman/multinli/
 
 4 - Run ```python nli-model.py``` to train and test the SNLI+MultiNLI model, hence generating the files ```snli-weights.h5``` and ```concat_snli.h5```. Once again, you can simply download them directly.
 
-5 - Run ```python fnc-model.py``` to train and test the FNC model (code already includes SNLI+MultiNLI weight loading)
+5 - Run ```python fnc-model.py``` to train and test the FNC model (code already includes SNLI+MultiNLI weight loading).
 
-6 - The ```Model_-Best.h5``` file inside the generated ```weights``` folder will contain the reported model
+6 - The ```Model_-Best.h5``` file inside the generated ```weights``` folder will contain the reported model.
